@@ -101,18 +101,24 @@ def main():
                  generator_learning_rate=generator_learning_rate,
                  discriminator_learning_rate=discriminator_learning_rate)
 
+        if iteration == 10:
+            print('Creating an initial checkpoint...')
+            model.save(directory=os.path.join('experiments', model_name, 'checkpoints'),
+                       filename='{}_{}.ckpt'.format(model_name, iteration))
+
         if iteration % 10 == 0:
             print("d_a=%.3f, d_c=%.3f, d_i=%.3f"%(dis_adv_loss, dis_cond_loss, dis_int_loss))
             print("g_a=%.3f, g_c=%.3f, g_i=%.3f, g_r=%.3f, g_s=%.3f, g_b=%.3f, g_m=%.3f, g_t=%.3f"%(gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, lossb, lossm, losst))
         
         chkpt_save_num = 5000
+        val_num = 1000
 
         if iteration % chkpt_save_num == 0:
             print('Checkpointing...')
             model.save(directory=os.path.join('experiments', model_name, 'checkpoints'),
                        filename='{}_{}.ckpt'.format(model_name, iteration))
 
-        if iteration % 1000 == 0 :
+        if iteration % val_num == 0 :
             for q in range(3):
                 eval_dirs = os.listdir('datasets_val')
                 assert len(eval_dirs) == num_domains
