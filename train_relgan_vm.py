@@ -102,12 +102,12 @@ def main():
                  discriminator_learning_rate=discriminator_learning_rate)
 
         if iteration % 10 == 0:
-            print('Iteration: {:07d}, Generator Loss : {:.3f}, Discriminator Loss : {:.3f}'.format(iteration,
-                                                                                                   generator_loss,
-                                                                                                   discriminator_loss))
             print("d_a=%.3f, d_c=%.3f, d_i=%.3f"%(dis_adv_loss, dis_cond_loss, dis_int_loss))
             print("g_a=%.3f, g_c=%.3f, g_i=%.3f, g_r=%.3f, g_s=%.3f, g_b=%.3f, g_m=%.3f, g_t=%.3f"%(gen_adv_loss, gen_cond_loss, gen_int_loss, gen_rec_loss, gen_self_loss, lossb, lossm, losst))
-        if iteration % 5000 == 0:
+        
+        chkpt_save_num = 5000
+
+        if iteration % chkpt_save_num == 0:
             print('Checkpointing...')
             model.save(directory=os.path.join('experiments', model_name, 'checkpoints'),
                        filename='{}_{}.ckpt'.format(model_name, iteration))
@@ -161,7 +161,9 @@ def main():
                     os.makedirs(validation_A_output_dir, exist_ok=True)
                     librosa.output.write_wav(os.path.join(validation_A_output_dir, "{:06d}_{}_to_{}_{:.3f}_{}".format(iteration,x_atr,y_atr,alpha[0],os.path.basename(file))), wav_transformed,
                                              sampling_rate)
-
+        print('Iteration: {:07d}, Generator Loss : {:.3f}, Discriminator Loss : {:.3f}'.format(iteration,
+                                                                                                   generator_loss,
+                                                                                                   discriminator_loss))
         iteration += 1
 
 if __name__ == '__main__':
